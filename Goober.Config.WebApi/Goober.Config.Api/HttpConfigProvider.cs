@@ -6,6 +6,7 @@ using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 
 namespace Goober.Config.Api
 {
@@ -13,15 +14,16 @@ namespace Goober.Config.Api
     {
         private readonly ConfigurationReloadToken _configurationReloadToken;
         private readonly HttpConfigParameters _httpConfigParameters;
-
+        private readonly IHttpClientFactory _httpClientFactory;
         private const string GetChildKeysAndSectionsPath = "api/get-childs-keys-and-sections";
         private const string GetConfigRaw = "api/get-config-raw";
 
-        public HttpConfigProvider(HttpConfigParameters httpConfigParameters)
+        public HttpConfigProvider(HttpConfigParameters httpConfigParameters, IHttpClientFactory httpClientFactory)
         {
             _configurationReloadToken = new ConfigurationReloadToken();
 
             _httpConfigParameters = httpConfigParameters;
+            _httpClientFactory = httpClientFactory;
         }
 
         public IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string parentPath)
@@ -29,6 +31,7 @@ namespace Goober.Config.Api
             var keys = earlierKeys != null ? string.Join(",", earlierKeys.OrderBy(x => x)) : string.Empty;
 
             var configResult = HttpUtils.ExecutePostAsync<GetPathChildsAndSectionsKeysResponse, GetPathChildsAndSectionsKeysRequest>(
+                httpClientFactory: _httpClientFactory,
                 schemeAndHost: _httpConfigParameters.ApiSchemeAndHost,
                 urlPath: GetChildKeysAndSectionsPath,
                 request: new GetPathChildsAndSectionsKeysRequest
@@ -97,6 +100,7 @@ namespace Goober.Config.Api
             }
 
             var ret = HttpUtils.ExecutePostAsync<GetConfigRawResponseModel, GetConfigRawRequestModel>(
+                httpClientFactory: _httpClientFactory,
                 schemeAndHost: _httpConfigParameters.ApiSchemeAndHost,
                 urlPath: GetConfigRaw,
                 request: new GetConfigRawRequestModel

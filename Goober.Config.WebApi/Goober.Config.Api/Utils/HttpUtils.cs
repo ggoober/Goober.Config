@@ -16,8 +16,6 @@ namespace Goober.Config.Api.Utils
 {
     static class HttpUtils
     {
-        private static HttpClient httpClient = new HttpClient();
-        
         private static readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
         {
             Converters = new List<JsonConverter>
@@ -37,39 +35,44 @@ namespace Goober.Config.Api.Utils
         private const string ApplicationJsonContentTypeValue = "application/json";
         
         private static async Task<string> ExecutePostReturnStringInternalAsync<TRequest>(
-           HttpRequestContextModel<TRequest> requestContext,
-           int timeoutInMilliseconds,
-           long maxResponseContentLength)
+            IHttpClientFactory httpClientFactory,
+            HttpRequestContextModel<TRequest> requestContext,
+            int timeoutInMilliseconds,
+            long maxResponseContentLength)
         {
-            httpClient.Timeout = TimeSpan.FromMilliseconds(timeoutInMilliseconds);
-
-            var httpRequest = GenerateHttpRequestMessage(
-                requestUrl: requestContext.Url,
-                httpMethodType: HttpMethod.Post,
-                authenticationHeaderValue: requestContext.AuthenticationHeaderValue,
-                headerValues: requestContext.HeaderValues,
-                responseMediaTypes: new List<string> { ApplicationJsonContentTypeValue });
-
-            var strJsonContent = Serialize(requestContext.RequestContent, requestContext.JsonSerializerSettings);
-
-            httpRequest.Content = new StringContent(content: strJsonContent, Encoding.UTF8, mediaType: ApplicationJsonContentTypeValue);
-
-            var httpResponse = await httpClient.SendAsync(httpRequest);
-
-            if (httpResponse.StatusCode == HttpStatusCode.NoContent)
+            using (var httpClient = httpClientFactory.CreateClient())
             {
-                return default;
+                httpClient.Timeout = TimeSpan.FromMilliseconds(timeoutInMilliseconds);
+
+                var httpRequest = GenerateHttpRequestMessage(
+                    requestUrl: requestContext.Url,
+                    httpMethodType: HttpMethod.Post,
+                    authenticationHeaderValue: requestContext.AuthenticationHeaderValue,
+                    headerValues: requestContext.HeaderValues,
+                    responseMediaTypes: new List<string> { ApplicationJsonContentTypeValue });
+
+                var strJsonContent = Serialize(requestContext.RequestContent, requestContext.JsonSerializerSettings);
+
+                httpRequest.Content = new StringContent(content: strJsonContent, Encoding.UTF8, mediaType: ApplicationJsonContentTypeValue);
+
+                var httpResponse = await httpClient.SendAsync(httpRequest);
+
+                if (httpResponse.StatusCode == HttpStatusCode.NoContent)
+                {
+                    return default;
+                }
+
+                var ret = await GetResponseStringAndProcessResponseStatusCodeAsync(
+                    httpResponse: httpResponse,
+                    loggingRequestContext: requestContext,
+                    maxResponseContentLength: maxResponseContentLength);
+
+                return ret;
             }
-
-            var ret = await GetResponseStringAndProcessResponseStatusCodeAsync(
-                httpResponse: httpResponse,
-                loggingRequestContext: requestContext,
-                maxResponseContentLength: maxResponseContentLength);
-
-            return ret;
         }
 
         public static async Task<TResponse> ExecutePostAsync<TResponse, TRequest>(
+            IHttpClientFactory httpClientFactory,
             string schemeAndHost,
             string urlPath,
             TRequest request,
@@ -93,9 +96,10 @@ namespace Goober.Config.Api.Utils
             };
 
             var strRet = await ExecutePostReturnStringInternalAsync(
-               requestContext: requestContext,
-               timeoutInMilliseconds: timeoutInMilliseconds,
-               maxResponseContentLength: maxResponseContentLength);
+                httpClientFactory: httpClientFactory,
+                requestContext: requestContext,
+                timeoutInMilliseconds: timeoutInMilliseconds,
+                maxResponseContentLength: maxResponseContentLength);
 
             if (string.IsNullOrEmpty(strRet) == true)
                 return default;

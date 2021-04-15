@@ -1,3 +1,4 @@
+using Goober.WebApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,8 +7,16 @@ namespace Goober.Config.WebApi
 {
     public class Startup : Goober.WebApi.BaseStartup
     {
-        public Startup(IConfiguration config) : base(config)
+        public Startup(IConfiguration config) 
+            : base(configSettings: 
+                    new BaseStartupConfigSettings {
+                        AppSettingsFileName = "appsettings.json",
+                        ConfigApiEnvironmentAndHostMappings = null,
+                        IsAppSettingsFileOptional = false 
+                    }, 
+                    swaggerSettings: null) 
         {
+            //do nothing
         }
 
         protected override void ConfigurePipelineAfterExceptionsHandling(IApplicationBuilder app)
