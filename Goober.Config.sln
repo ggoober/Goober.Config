@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Goober.Config.WebApi", "Goober.Config.WebApi\Goober.Config.WebApi.csproj", "{C92E8B1E-625C-4090-8938-D28237B0383A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Config.WebApi", "Goober.Config.WebApi\Goober.Config.WebApi.csproj", "{C92E8B1E-625C-4090-8938-D28237B0383A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Goober.Config.Api", "Goober.Config.Api\Goober.Config.Api.csproj", "{D77B33BD-9AF7-4DBD-A2CD-80BA5A37DCBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Config.Api", "Goober.Config.Api\Goober.Config.Api.csproj", "{D77B33BD-9AF7-4DBD-A2CD-80BA5A37DCBD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi", "..\..\Goober.Web\Goober.WebApi\Goober.WebApi.csproj", "{AC7F37E7-7431-434A-B3E1-F327CFBC3385}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi", "..\Goober.Web\Goober.WebApi\Goober.WebApi.csproj", "{AC7F37E7-7431-434A-B3E1-F327CFBC3385}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Http", "..\..\Goober.Standard\Goober.Http\Goober.Http.csproj", "{4248B045-4263-4032-B8AB-3CB7224E830C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Http", "..\Goober.Standard\Goober.Http\Goober.Http.csproj", "{4248B045-4263-4032-B8AB-3CB7224E830C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.CommonModels", "..\..\Goober.Standard\Goober.CommonModels\Goober.CommonModels.csproj", "{2F0F1514-0BF7-475F-AF77-7AF91E4F54A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.CommonModels", "..\Goober.Standard\Goober.CommonModels\Goober.CommonModels.csproj", "{2F0F1514-0BF7-475F-AF77-7AF91E4F54A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Core", "..\Goober.Standard\Goober.Core\Goober.Core.csproj", "{2B2B2AAE-2286-4626-93A8-8813B7401F5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{2F0F1514-0BF7-475F-AF77-7AF91E4F54A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F0F1514-0BF7-475F-AF77-7AF91E4F54A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F0F1514-0BF7-475F-AF77-7AF91E4F54A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B2B2AAE-2286-4626-93A8-8813B7401F5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B2B2AAE-2286-4626-93A8-8813B7401F5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B2B2AAE-2286-4626-93A8-8813B7401F5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B2B2AAE-2286-4626-93A8-8813B7401F5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

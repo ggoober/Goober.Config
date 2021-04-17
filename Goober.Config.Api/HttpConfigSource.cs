@@ -18,6 +18,7 @@ namespace Goober.Config.Api
             var sc = new ServiceCollection();
             sc.AddHttpClient();
             var sp = sc.BuildServiceProvider();
+
             _httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
         }
 

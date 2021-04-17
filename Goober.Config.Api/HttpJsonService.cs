@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Net.Http.Headers;
-using System.Net;
+﻿using Goober.CommonModels;
+using Goober.Config.Api.Models.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using Goober.Config.Api.Models.Internal;
-using System.Threading;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Goober.Config.Api.Utils
+namespace Goober.Config.Api
 {
-    static class HttpUtils
+    [ServiceCollectionIgnoreRegistrationAttribute]
+    internal class HttpJsonService
     {
         private static readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
         {
@@ -32,15 +34,20 @@ namespace Goober.Config.Api.Utils
             DateParseHandling = DateParseHandling.DateTime
         };
 
+        private readonly IHttpClientFactory _httpClientFactory;
         private const string ApplicationJsonContentTypeValue = "application/json";
-        
-        private static async Task<string> ExecutePostReturnStringInternalAsync<TRequest>(
-            IHttpClientFactory httpClientFactory,
+
+        public HttpJsonService(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
+
+        private async Task<string> ExecutePostReturnStringInternalAsync<TRequest>(
             HttpRequestContextModel<TRequest> requestContext,
             int timeoutInMilliseconds,
             long maxResponseContentLength)
         {
-            using (var httpClient = httpClientFactory.CreateClient())
+            using (var httpClient = _httpClientFactory.CreateClient())
             {
                 httpClient.Timeout = TimeSpan.FromMilliseconds(timeoutInMilliseconds);
 
@@ -71,8 +78,7 @@ namespace Goober.Config.Api.Utils
             }
         }
 
-        public static async Task<TResponse> ExecutePostAsync<TResponse, TRequest>(
-            IHttpClientFactory httpClientFactory,
+        public async Task<TResponse> ExecutePostAsync<TResponse, TRequest>(
             string schemeAndHost,
             string urlPath,
             TRequest request,
@@ -96,7 +102,6 @@ namespace Goober.Config.Api.Utils
             };
 
             var strRet = await ExecutePostReturnStringInternalAsync(
-                httpClientFactory: httpClientFactory,
                 requestContext: requestContext,
                 timeoutInMilliseconds: timeoutInMilliseconds,
                 maxResponseContentLength: maxResponseContentLength);
@@ -109,22 +114,7 @@ namespace Goober.Config.Api.Utils
                 jsonSerializerSettings: requestContext.JsonSerializerSettings,
                 loggingRequestContext: requestContext);
         }
-
-        public static TResult RunSync<TResult>(this Task<TResult> task)
-        {
-            var taskFactory = new
-                TaskFactory(CancellationToken.None,
-                        TaskCreationOptions.None,
-                        TaskContinuationOptions.None,
-                        TaskScheduler.Default);
-
-            return taskFactory.StartNew(() => task)
-                .Unwrap()
-                .GetAwaiter()
-                .GetResult();
-        }
-
-
+        
         #region private methods
 
         private static string Serialize(object value, JsonSerializerSettings serializerSettings = null)
@@ -264,5 +254,6 @@ namespace Goober.Config.Api.Utils
         }
 
         #endregion
+
     }
 }

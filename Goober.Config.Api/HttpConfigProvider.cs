@@ -14,7 +14,7 @@ namespace Goober.Config.Api
     {
         private readonly ConfigurationReloadToken _configurationReloadToken;
         private readonly HttpConfigParameters _httpConfigParameters;
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpJsonService _httpJsonService;
         private const string GetChildKeysAndSectionsPath = "api/get-childs-keys-and-sections";
         private const string GetConfigRaw = "api/get-config-raw";
 
@@ -23,23 +23,22 @@ namespace Goober.Config.Api
             _configurationReloadToken = new ConfigurationReloadToken();
 
             _httpConfigParameters = httpConfigParameters;
-            _httpClientFactory = httpClientFactory;
+            _httpJsonService = new HttpJsonService(httpClientFactory: httpClientFactory);
         }
 
         public IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string parentPath)
         {
             var keys = earlierKeys != null ? string.Join(",", earlierKeys.OrderBy(x => x)) : string.Empty;
 
-            var configResult = HttpUtils.ExecutePostAsync<GetPathChildsAndSectionsKeysResponse, GetPathChildsAndSectionsKeysRequest>(
-                httpClientFactory: _httpClientFactory,
-                schemeAndHost: _httpConfigParameters.ApiSchemeAndHost,
-                urlPath: GetChildKeysAndSectionsPath,
-                request: new GetPathChildsAndSectionsKeysRequest
-                {
-                    Application = _httpConfigParameters.ApplicationName,
-                    Environment = _httpConfigParameters.Environment,
-                    ParentKey = parentPath
-                }).RunSync();
+            var configResult = _httpJsonService.ExecutePostAsync<GetPathChildsAndSectionsKeysResponse, GetPathChildsAndSectionsKeysRequest>(
+                                    schemeAndHost: _httpConfigParameters.ApiSchemeAndHost,
+                                    urlPath: GetChildKeysAndSectionsPath,
+                                    request: new GetPathChildsAndSectionsKeysRequest
+                                    {
+                                        Application = _httpConfigParameters.ApplicationName,
+                                        Environment = _httpConfigParameters.Environment,
+                                        ParentKey = parentPath
+                                    }).RunSync();
 
             var ret = new List<string>();
 
@@ -99,17 +98,16 @@ namespace Goober.Config.Api
                 parentKey = string.Join(":", splittedKeys.Take(splittedKeys.Count - 1));
             }
 
-            var ret = HttpUtils.ExecutePostAsync<GetConfigRawResponseModel, GetConfigRawRequestModel>(
-                httpClientFactory: _httpClientFactory,
-                schemeAndHost: _httpConfigParameters.ApiSchemeAndHost,
-                urlPath: GetConfigRaw,
-                request: new GetConfigRawRequestModel
-                {
-                    Application = _httpConfigParameters.ApplicationName,
-                    Environment = _httpConfigParameters.Environment,
-                    Key = calcKey,
-                    ParentKey = parentKey
-                }).RunSync();
+            var ret = _httpJsonService.ExecutePostAsync<GetConfigRawResponseModel, GetConfigRawRequestModel>(
+                                schemeAndHost: _httpConfigParameters.ApiSchemeAndHost,
+                                urlPath: GetConfigRaw,
+                                request: new GetConfigRawRequestModel
+                                {
+                                    Application = _httpConfigParameters.ApplicationName,
+                                    Environment = _httpConfigParameters.Environment,
+                                    Key = calcKey,
+                                    ParentKey = parentKey
+                                }).RunSync();
 
             return ret?.Value;
         }
