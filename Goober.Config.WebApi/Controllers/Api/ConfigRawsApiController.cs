@@ -26,14 +26,14 @@ namespace Goober.Config.WebApi.Controllers.Api
 
         private static List<ConfigRaw> ConfigRaws = new List<ConfigRaw> 
         {
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "span", Value="span", ParentKey = null },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "a", ParentKey = null, Value="a" },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "text", ParentKey = "doc:body:div", Value="doc:body:div:text" },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "select", ParentKey = "doc:body:div", Value="doc:body:div:select" },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "text", ParentKey = "doc:body:divs:0", Value="doc:body:divs:0:text" },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "select", ParentKey = "doc:body:divs:0", Value="doc:body:divs:0:select" },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "text", ParentKey = "doc:body:divs:1", Value="doc:body:divs:1:text" },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "select", ParentKey = "doc:body:divs:1", Value="doc:body:divs:1:select" }
+            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Span", Value="Span", ParentKey = null },
+            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "A", ParentKey = null, Value="A" },
+            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Text", ParentKey = "Doc:Body:Div", Value="Doc:Body:Div:Text" },
+            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Select", ParentKey = "Doc:Body:Div", Value="Doc:Body:Div:Select" },
+            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Text", ParentKey = "Doc:Body:Divs:0", Value="Doc:Body:Divs:0:Text" },
+            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Select", ParentKey = "Doc:Body:Divs:0", Value="Doc:Body:Divs:0:Select" },
+            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Text", ParentKey = "Doc:Body:Divs:1", Value="Doc:Body:Divs:1:Text" },
+            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Select", ParentKey = "Doc:Body:Divs:1", Value="Doc:Body:Divs:1:Select" }
 
         };
 

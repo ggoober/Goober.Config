@@ -7,5 +7,7 @@
         public string ApplicationName { get; set; }
 
         public string ApiSchemeAndHost { get; set; }
+
+        public ConfigApiParameters ConfigApiParameters { get; set; }
     }
 }

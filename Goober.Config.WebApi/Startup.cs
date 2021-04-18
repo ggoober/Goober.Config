@@ -2,12 +2,13 @@ using Goober.WebApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Goober.Config.WebApi
 {
     public class Startup : Goober.WebApi.BaseStartup
     {
-        public Startup(IConfiguration config) 
+        public Startup() 
             : base(configSettings: 
                     new BaseStartupConfigSettings {
                         AppSettingsFileName = "appsettings.json",

@@ -1,30 +1,23 @@
 ﻿using Goober.Config.Api.Models;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http;
+using System;
 
 namespace Goober.Config.Api
 {
     class HttpConfigSource : IConfigurationSource
     {
         private readonly HttpConfigParameters _httpConfigParameters;
+        private readonly IServiceProvider _serviceProvider;
 
-        private readonly IHttpClientFactory _httpClientFactory;
-
-        public HttpConfigSource(HttpConfigParameters httpConfigParameters)
+        public HttpConfigSource(HttpConfigParameters httpConfigParameters, IServiceProvider serviceProvider)
         {
             _httpConfigParameters = httpConfigParameters;
-
-            var sc = new ServiceCollection();
-            sc.AddHttpClient();
-            var sp = sc.BuildServiceProvider();
-
-            _httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+            _serviceProvider = serviceProvider;
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new HttpConfigProvider(httpConfigParameters: _httpConfigParameters, httpClientFactory: _httpClientFactory);
+            return new HttpConfigProvider(httpConfigParameters: _httpConfigParameters, serviceProvider: _serviceProvider);
         }
     }
 }
