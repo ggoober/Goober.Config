@@ -1,6 +1,7 @@
 using Goober.Web.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Goober.Config.DAL.MsSql;
 
 namespace Goober.Config.WebApi
 {
@@ -29,6 +30,8 @@ namespace Goober.Config.WebApi
 
         protected override void ConfigureServiceCollections(IServiceCollection services)
         {
+            services.RegisterConfigMsSqlDbContext(Configuration);
+            services.RegisterRepositories();
         }
     }
 }

@@ -7,6 +7,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Goober.Web\Goober.Web\Goober.Web.csproj" />
+    <ProjectReference Include="..\Goober.Config.DAL.MsSql\Goober.Config.DAL.MsSql.csproj" />
+    <ProjectReference Include="..\Goober.DAL.Abstractions\Goober.Config.DAL.Abstraction.csproj" />
   </ItemGroup>
 
 </Project>
