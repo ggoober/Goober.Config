@@ -1,5 +1,5 @@
-﻿using Goober.Config.WebApi.Models;
-using Goober.Core.Extensions;
+﻿using Goober.Core.Extensions;
+using Goober.Config.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace Goober.Config.WebApi.Controllers.Api
 {
     [ApiController]
-    public class ConfigRawsApiController : ControllerBase
+    public class ConfigRowsApiController : ControllerBase
     {
-        class ConfigRaw
+        class ConfigRow
         {
             public string Environment { get; set; }
 
@@ -24,29 +24,29 @@ namespace Goober.Config.WebApi.Controllers.Api
             public string Value { get; set; }
         }
 
-        private static List<ConfigRaw> ConfigRaws = new List<ConfigRaw> 
+        private static List<ConfigRow> ConfigRaws = new List<ConfigRow> 
         {
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Span", Value="Span", ParentKey = null },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "A", ParentKey = null, Value="A" },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Text", ParentKey = "Doc:Body:Div", Value="Doc:Body:Div:Text" },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Select", ParentKey = "Doc:Body:Div", Value="Doc:Body:Div:Select" },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Text", ParentKey = "Doc:Body:Divs:0", Value="Doc:Body:Divs:0:Text" },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Select", ParentKey = "Doc:Body:Divs:0", Value="Doc:Body:Divs:0:Select" },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Text", ParentKey = "Doc:Body:Divs:1", Value="Doc:Body:Divs:1:Text" },
-            new ConfigRaw { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Select", ParentKey = "Doc:Body:Divs:1", Value="Doc:Body:Divs:1:Select" }
+            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Span", Value="Span", ParentKey = null },
+            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "A", ParentKey = null, Value="A" },
+            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Text", ParentKey = "Doc:Body:Div", Value="Doc:Body:Div:Text" },
+            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Select", ParentKey = "Doc:Body:Div", Value="Doc:Body:Div:Select" },
+            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Text", ParentKey = "Doc:Body:Divs:0", Value="Doc:Body:Divs:0:Text" },
+            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Select", ParentKey = "Doc:Body:Divs:0", Value="Doc:Body:Divs:0:Select" },
+            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Text", ParentKey = "Doc:Body:Divs:1", Value="Doc:Body:Divs:1:Text" },
+            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Select", ParentKey = "Doc:Body:Divs:1", Value="Doc:Body:Divs:1:Select" }
 
         };
 
-        private readonly ILogger<ConfigRawsApiController> _logger;
+        private readonly ILogger<ConfigRowsApiController> _logger;
 
-        public ConfigRawsApiController(ILogger<ConfigRawsApiController> logger)
+        public ConfigRowsApiController(ILogger<ConfigRowsApiController> logger)
         {
             _logger = logger;
         }
 
         [HttpPost]
-        [Route("api/get-config-raw")]
-        public async Task<GetConfigRawResponseModel> GetConfigRawAsync([FromBody] GetConfigRawRequestModel request)
+        [Route("api/get-config-row")]
+        public async Task<GetConfigRowResponseModel> GetConfigRawAsync([FromBody] GetConfigRowRequestModel request)
         {
             request.RequiredArgumentNotNull(nameof(request));
             request.RequiredArgumentNotNull(() => request.Environment);
@@ -62,7 +62,7 @@ namespace Goober.Config.WebApi.Controllers.Api
                 return null;
             }
 
-            return new GetConfigRawResponseModel {  ResultType = Enums.GetConfigResultTypeEnum.Exact, Value = ret.Value };
+            return new GetConfigRowResponseModel {  ResultType = Enums.GetConfigResultTypeEnum.Exact, Value = ret.Value };
         }
 
         [HttpPost]

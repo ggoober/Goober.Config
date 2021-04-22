@@ -1,12 +1,10 @@
-using Goober.WebApi.Models;
+using Goober.Web.Models;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Goober.Config.WebApi
 {
-    public class Startup : Goober.WebApi.BaseStartup
+    public class Startup : Goober.Web.BaseApiStartup
     {
         public Startup() 
             : base(configSettings: 
@@ -15,7 +13,8 @@ namespace Goober.Config.WebApi
                         ConfigApiEnvironmentAndHostMappings = null,
                         IsAppSettingsFileOptional = false 
                     }, 
-                    swaggerSettings: null) 
+                    swaggerSettings: null,
+                    memoryCacheSizeLimitInMB: null) 
         {
             //do nothing
         }

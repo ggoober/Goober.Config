@@ -8,6 +8,8 @@
 
         public string ApiSchemeAndHost { get; set; }
 
-        public ConfigApiParameters ConfigApiParameters { get; set; }
+        public int? CacheRefreshTimeInMinutes { get; set; }
+
+        public int? CacheExpirationTimeInMinutes { get; set; }
     }
 }

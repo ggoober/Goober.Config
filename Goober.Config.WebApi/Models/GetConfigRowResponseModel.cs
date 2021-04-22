@@ -2,7 +2,7 @@
 
 namespace Goober.Config.WebApi.Models
 {
-    public class GetConfigRawResponseModel
+    public class GetConfigRowResponseModel
     {
         public GetConfigResultTypeEnum ResultType { get; set; }
 

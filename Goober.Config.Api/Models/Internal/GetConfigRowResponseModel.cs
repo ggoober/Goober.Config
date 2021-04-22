@@ -2,9 +2,9 @@
 
 namespace Goober.Config.Api.Models.Internal
 {
-    internal class GetConfigRawResponseModel
+    internal class GetConfigRowResponseModel
     {
-        public GetConfigResultTypeEnum ResultType { get; set; }
+        public GetConfigRowSelectConditionTypeEnum SelectedConditionType { get; set; }
 
         public string Value { get; set; }
     }

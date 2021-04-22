@@ -1,6 +1,6 @@
-﻿namespace Goober.Config.Api.Models.Internal
+﻿namespace Goober.Config.WebApi.Models
 {
-    internal class GetConfigRawRequestModel
+    public class GetConfigRowRequestModel
     {
         public string Environment { get; set; }
 

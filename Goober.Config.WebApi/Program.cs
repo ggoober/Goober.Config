@@ -1,4 +1,4 @@
-using Goober.WebApi;
+using Goober.Web;
 
 namespace Goober.Config.WebApi
 {

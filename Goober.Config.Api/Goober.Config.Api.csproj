@@ -13,7 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Goober.Standard\Goober.CommonModels\Goober.CommonModels.csproj" />
+    <ProjectReference Include="..\..\Goober.Standard\Goober.Caching.Abstractions\Goober.Caching.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Goober.Standard\Goober.Core\Goober.Core.csproj" />
+    <ProjectReference Include="..\..\Goober.Standard\Goober.Http.Abstractions\Goober.Http.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
