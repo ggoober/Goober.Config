@@ -46,7 +46,7 @@ namespace Goober.Config.WebApi.Controllers.Api
 
         [HttpPost]
         [Route("api/get-config-row")]
-        public async Task<GetConfigRowResponseModel> GetConfigRawAsync([FromBody] GetConfigRowRequestModel request)
+        public async Task<GetConfigRowResponseModel> GetConfigRowAsync([FromBody] GetConfigRowRequestModel request)
         {
             request.RequiredArgumentNotNull(nameof(request));
             request.RequiredArgumentNotNull(() => request.Environment);
