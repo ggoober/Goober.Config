@@ -5,7 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Goober.EntityFramework\Goober.EntityFramework.SqlServer\Goober.EntityFramework.SqlServer.csproj" />
+    <PackageReference Include="Goober.Core" Version="2.0.1" />
+    <PackageReference Include="Goober.EntityFramework.SqlServer" Version="3.1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Goober.DAL.Abstractions\Goober.Config.DAL.Abstraction.csproj" />
   </ItemGroup>
 

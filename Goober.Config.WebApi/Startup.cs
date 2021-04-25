@@ -31,7 +31,7 @@ namespace Goober.Config.WebApi
         protected override void ConfigureServiceCollections(IServiceCollection services)
         {
             services.RegisterConfigMsSqlDbContext(Configuration);
-            services.RegisterRepositories();
+            services.RegisterConfigMsSqlRepositories();
         }
     }
 }

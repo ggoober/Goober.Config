@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Goober.Web\Goober.Web\Goober.Web.csproj" />
+    <PackageReference Include="Goober.Web" Version="3.1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Goober.Config.DAL.MsSql\Goober.Config.DAL.MsSql.csproj" />
     <ProjectReference Include="..\Goober.DAL.Abstractions\Goober.Config.DAL.Abstraction.csproj" />
   </ItemGroup>

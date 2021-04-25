@@ -21,8 +21,8 @@ namespace Goober.Config.Api.Services.Implementation
         private readonly IHttpJsonHelperService _httpJsonHelperService;
         private readonly ICacheProvider _cacheProvider;
 
-        private const string GetChildKeysAndSectionsPath = "api/get-childs-keys-and-sections";
-        private const string GetConfigRaw = "api/get-config-row";
+        private const string GetChildKeysAndSectionsPath = "/api/config/get-childs-keys-and-sections";
+        private const string GetConfigRaw = "/api/config/get-row";
 
         public HttpConfigProvider(HttpConfigParameters httpConfigParameters,
             IHttpJsonHelperService httpJsonHelperService,

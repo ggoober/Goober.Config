@@ -1,6 +1,4 @@
-﻿using Goober.Config.Api.Enums;
-
-namespace Goober.Config.Api.Models.Internal
+﻿namespace Goober.Config.Api.Models.Internal
 {
     internal class GetConfigRowRequestModel
     {
@@ -11,7 +9,5 @@ namespace Goober.Config.Api.Models.Internal
         public string Key { get; set; }
 
         public string ParentKey { get; set; }
-
-        public GetConfigRowSelectConditionTypeEnum? SelectCondiitionType { get; set; }
     }
 }

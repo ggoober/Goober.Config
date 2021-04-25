@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Goober.EntityFramework.Common" Version="3.1.0.2" />
+  </ItemGroup>
+
 </Project>

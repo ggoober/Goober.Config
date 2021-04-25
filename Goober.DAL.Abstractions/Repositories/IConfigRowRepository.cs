@@ -6,10 +6,24 @@ namespace Goober.Config.DAL.Repositories
 {
     public interface IConfigRowRepository
     {
+        
         Task<List<ConfigRowResult>> GetByApplicationAsync(string environment, string application, string key, string parent);
 
-        Task<List<ConfigRowResult>> GetWithoutApplicationAsync(string environment, string key, string parent);
+        Task<List<ConfigRowResult>> GetExcludeApplicationAsync(string environment, string key, string parent, bool anyApplication);
 
-        Task<List<ConfigRowResult>> GetIgnoringApplicationAsync(string environment, string key, string parent);
+        Task<List<string>> GetChildKeysByApplicationAsync(string environment, string application, string parent);
+        
+        Task<List<string>> GetChildKeysWithoutApplicationAsync(string environment, string parent);
+        
+        Task<List<string>> GetSectionsByApplicationAsync(string environment, string application, string parent);
+        
+        Task<List<string>> GetSectionsWithoutApplicationAsync(string environment, string parent);
+        
+        Task<ConfigRowResult> InsertAsync(ConfigRowResult configRow);
+        
+        Task<ConfigRowResult> UpdateAsync(ConfigRowResult configRow);
+        
+        Task DeleteAsync(ConfigRowResult configRow);
+
     }
 }

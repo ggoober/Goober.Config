@@ -15,7 +15,7 @@ namespace Goober.Config.DAL.MsSql
             services.RegisterMsSqlDbContext<IConfigDbContext, ConfigDbContext>(() => configuration.GetConnectionString("ConfigDB"));
         }
 
-        public static void RegisterRepositories(this IServiceCollection services)
+        public static void RegisterConfigMsSqlRepositories(this IServiceCollection services)
         {
             services.AddScoped<IConfigRowRepository, ConfigRowRepository>();
         }

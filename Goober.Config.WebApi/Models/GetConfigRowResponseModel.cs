@@ -4,7 +4,7 @@ namespace Goober.Config.WebApi.Models
 {
     public class GetConfigRowResponseModel
     {
-        public GetConfigResultTypeEnum ResultType { get; set; }
+        public GetConfigRowSelectConditionTypeEnum SelectedConditionType { get; set; }
 
         public string Value { get; set; }
     }

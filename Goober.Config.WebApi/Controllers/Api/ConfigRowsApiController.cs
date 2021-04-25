@@ -5,111 +5,160 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Goober.Config.DAL.Repositories;
+using Goober.Config.WebApi.Enums;
 
 namespace Goober.Config.WebApi.Controllers.Api
 {
     [ApiController]
     public class ConfigRowsApiController : ControllerBase
     {
-        class ConfigRow
-        {
-            public string Environment { get; set; }
-
-            public string Application { get; set; }
-
-            public string Key { get; set; }
-
-            public string ParentKey { get; set; }
-
-            public string Value { get; set; }
-        }
-
-        private static List<ConfigRow> ConfigRaws = new List<ConfigRow> 
-        {
-            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Span", Value="Span", ParentKey = null },
-            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "A", ParentKey = null, Value="A" },
-            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Text", ParentKey = "Doc:Body:Div", Value="Doc:Body:Div:Text" },
-            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Select", ParentKey = "Doc:Body:Div", Value="Doc:Body:Div:Select" },
-            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Text", ParentKey = "Doc:Body:Divs:0", Value="Doc:Body:Divs:0:Text" },
-            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Select", ParentKey = "Doc:Body:Divs:0", Value="Doc:Body:Divs:0:Select" },
-            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Text", ParentKey = "Doc:Body:Divs:1", Value="Doc:Body:Divs:1:Text" },
-            new ConfigRow { Environment = "Production", Application = "Goober.WebApi.Example", Key = "Select", ParentKey = "Doc:Body:Divs:1", Value="Doc:Body:Divs:1:Select" }
-
-        };
-
         private readonly ILogger<ConfigRowsApiController> _logger;
+        private readonly IConfigRowRepository _configRowRepository;
 
-        public ConfigRowsApiController(ILogger<ConfigRowsApiController> logger)
+        public ConfigRowsApiController(ILogger<ConfigRowsApiController> logger,
+            IConfigRowRepository configRowRepository)
         {
             _logger = logger;
+            _configRowRepository = configRowRepository;
         }
 
         [HttpPost]
-        [Route("api/get-config-row")]
+        [Route("/api/config/get-row")]
         public async Task<GetConfigRowResponseModel> GetConfigRowAsync([FromBody] GetConfigRowRequestModel request)
         {
             request.RequiredArgumentNotNull(nameof(request));
             request.RequiredArgumentNotNull(() => request.Environment);
             request.RequiredArgumentNotNull(() => request.Key);
 
-            var ret = ConfigRaws.FirstOrDefault(x => x.Environment == request.Environment
-                        && x.Application == request.Application
-                        && x.Key == request.Key
-                        && x.ParentKey == request.ParentKey);
+            var ret = (await _configRowRepository.GetByApplicationAsync(environment: request.Environment,
+                        application: request.Application,
+                        key: request.Key,
+                        parent: request.ParentKey)).FirstOrDefault();
 
-            if (ret == null)
+            if (ret != null)
             {
-                return null;
+                return new GetConfigRowResponseModel { SelectedConditionType = GetConfigRowSelectConditionTypeEnum.ByApplication, Value = ret.Value };
             }
 
-            return new GetConfigRowResponseModel {  ResultType = Enums.GetConfigResultTypeEnum.Exact, Value = ret.Value };
+            ret = (await _configRowRepository.GetExcludeApplicationAsync(environment: request.Environment,
+                        key: request.Key,
+                        parent: request.ParentKey,
+                        anyApplication: false)).FirstOrDefault();
+
+            if (ret != null)
+            {
+                return new GetConfigRowResponseModel { SelectedConditionType = GetConfigRowSelectConditionTypeEnum.WithoutApplication, Value = ret.Value };
+            }
+
+            ret = (await _configRowRepository.GetExcludeApplicationAsync(environment: request.Environment,
+                        key: request.Key,
+                        parent: request.ParentKey,
+                        anyApplication: true)).FirstOrDefault();
+
+            if (ret != null)
+            {
+                return new GetConfigRowResponseModel { SelectedConditionType = GetConfigRowSelectConditionTypeEnum.IgnoreApplication, Value = ret.Value };
+            }
+
+            return null;
         }
 
         [HttpPost]
-        [Route("api/get-childs-keys-and-sections")]
+        [Route("/api/config/get-childs-keys-and-sections")]
         public async Task<GetPathChildsAndSectionsKeysResponse> GetPathChildsAndSectionsKeysAsync([FromBody] GetPathChildsAndSectionsKeysRequest request)
         {
             request.RequiredArgumentNotNull(nameof(request));
-            request.RequiredArgumentNotNull(()=> request.Environment);
-            request.RequiredArgumentNotNull(()=> request.ParentKey);
+            request.RequiredArgumentNotNull(() => request.Environment);
+            request.RequiredArgumentNotNull(() => request.ParentKey);
 
+            var ret = new GetPathChildsAndSectionsKeysResponse();
 
-            var raws = ConfigRaws.Where(x=>x.Environment == request.Environment
-                                && x.Application == request.Application
-                                && x.ParentKey != null
-                                && x.ParentKey.StartsWith(request.ParentKey))
-                            .ToList();
-
-            var childs = raws.Where(x => x.ParentKey == request.ParentKey).ToList();
-
-            var ret = new GetPathChildsAndSectionsKeysResponse
+            var childsResult = await GetChildsAsync(request);
+            if (childsResult.HasValue == true)
             {
-                Keys = childs.Select(x => x.Key).ToList()
-            };
+                ret.Keys = childsResult.Value.Childs;
+                ret.KeysSelectedConditionType = childsResult.Value.SelectedConditionType;
+            }
 
-            var sectionsParentKeys = raws.Where(x => x.ParentKey != request.ParentKey).Select(x => x.ParentKey).Distinct().ToList();
-            if (sectionsParentKeys.Any() && string.IsNullOrEmpty(request.ParentKey) == false)
+            var sectionsResult = await GetSectionsAsync(request);
+
+            if (sectionsResult.HasValue == true 
+                && sectionsResult.Value.Sections.Any() == true)
             {
-                var parentSections = request.ParentKey.Split(":", System.StringSplitOptions.RemoveEmptyEntries);
-                var parentSectionsCount = parentSections.Length;
-                foreach (var iSectionsParentKey in sectionsParentKeys)
+                ret.SectionsSelectedConditionType = sectionsResult.Value.SelectedConditionType;
+                ret.Sections = GetSubSections(request.ParentKey, sectionsResult);
+            }
+
+            return ret;
+        }
+
+        private static List<string> GetSubSections(string parentKey, (List<string> Sections, GetConfigRowSelectConditionTypeEnum SelectedConditionType)? sectionsResult)
+        {
+            var ret = new List<string>();
+
+            var parentSections = parentKey.Split(":", System.StringSplitOptions.RemoveEmptyEntries);
+            var parentSectionsCount = parentSections.Length;
+            foreach (var iSection in sectionsResult.Value.Sections)
+            {
+                var sections = iSection.Split(":", System.StringSplitOptions.RemoveEmptyEntries);
+                if (sections.Length > 1 && sections.Length <= parentSectionsCount)
                 {
-                    var sections = iSectionsParentKey.Split(":",System.StringSplitOptions.RemoveEmptyEntries);
-                    if (sections.Length > 1 && sections.Length <= parentSectionsCount)
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    //get next from parent last section
-                    var sectionKey = sections[parentSectionsCount];
-                    if (ret.Sections.All(x => x != sectionKey))
-                    {
-                        ret.Sections.Add(sectionKey);
-                    }
+                //get next from parent last section
+                var sectionKey = sections[parentSectionsCount];
+                if (ret.All(x => x != sectionKey))
+                {
+                    ret.Add(sectionKey);
                 }
             }
 
             return ret;
+        }
+
+        private async Task<(List<string> Childs, GetConfigRowSelectConditionTypeEnum SelectedConditionType)?> GetChildsAsync(GetPathChildsAndSectionsKeysRequest request)
+        {
+            var childs = await _configRowRepository.GetChildKeysByApplicationAsync(environment: request.Environment,
+                                                application: request.Application,
+                                                parent: request.ParentKey);
+
+            if (childs.Any() == true)
+            {
+                return (childs, GetConfigRowSelectConditionTypeEnum.ByApplication);
+            }
+
+            childs = await _configRowRepository.GetChildKeysWithoutApplicationAsync(environment: request.Environment, parent: request.ParentKey);
+
+            if (childs.Any() == true)
+            {
+                return (childs, GetConfigRowSelectConditionTypeEnum.WithoutApplication);
+            }
+
+            return null;
+        }
+
+        private async Task<(List<string> Sections, GetConfigRowSelectConditionTypeEnum SelectedConditionType)?> GetSectionsAsync(GetPathChildsAndSectionsKeysRequest request)
+        {
+            var sections = await _configRowRepository.GetSectionsByApplicationAsync(environment: request.Environment,
+                                            application: request.Application,
+                                            parent: request.ParentKey);
+
+            if (sections.Any() == true)
+            {
+                return (sections, GetConfigRowSelectConditionTypeEnum.ByApplication);
+            }
+
+            sections = await _configRowRepository.GetSectionsWithoutApplicationAsync(environment: request.Environment,
+                                            parent: request.ParentKey);
+
+            if (sections.Any() == true)
+            {
+                return (sections, GetConfigRowSelectConditionTypeEnum.WithoutApplication);
+            }
+
+            return null;
         }
     }
 }

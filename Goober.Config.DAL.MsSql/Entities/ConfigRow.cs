@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Goober.Config.DAL.Entities
@@ -6,6 +7,8 @@ namespace Goober.Config.DAL.Entities
     [Table("ConfigRows")]
     public class ConfigRow
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public string Environment { get; set; }
