@@ -1,7 +1,7 @@
 using Goober.Web.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Goober.Config.DAL.MsSql;
+using Goober.Config.DAL.PostgreSql;
 
 namespace Goober.Config.WebApi
 {
@@ -30,8 +30,8 @@ namespace Goober.Config.WebApi
 
         protected override void ConfigureServiceCollections(IServiceCollection services)
         {
-            services.RegisterConfigMsSqlDbContext(Configuration);
-            services.RegisterConfigMsSqlRepositories();
+            services.RegisterConfigPostgreSqlDbContext(Configuration);
+            services.RegisterConfigPostgreSqlRepositories();
         }
     }
 }
