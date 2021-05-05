@@ -4,7 +4,7 @@ using Goober.Config.DAL.PostgreSql.Entities;
 
 namespace Goober.Config.DAL.PostgreSql.DbContext.Implementation
 {
-    class ConfigDbContext : BaseDbContext, IConfigDbContext
+    internal class ConfigDbContext : BaseDbContext, IConfigDbContext
     {
         public ConfigDbContext(DbContextOptions<ConfigDbContext> options) : base(options)
         {

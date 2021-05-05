@@ -14,7 +14,7 @@ namespace Goober.Config.WebApi.Tests
                 );
 
             ret.Init<Goober.Config.WebApi.Startup>(services => {
-                ret.RegisterInMemoryDatabase<Goober.Config.DAL.MsSql.DbContext.Implementation.ConfigDbContext>(services);
+                ret.RegisterInMemoryDatabase<Goober.Config.DAL.PostgreSql.DbContext.Implementation.ConfigDbContext>(services);
             });
 
             return ret;

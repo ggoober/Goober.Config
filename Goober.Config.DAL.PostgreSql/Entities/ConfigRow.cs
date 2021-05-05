@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Goober.Config.DAL.PostgreSql.Entities
 {
-    [Table("ConfigRows", Schema = "public")]
+    [Table("config_rows", Schema = "public")]
     public class ConfigRow
     {
         [Key]
